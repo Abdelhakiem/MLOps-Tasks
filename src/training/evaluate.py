@@ -4,14 +4,13 @@ import pickle
 from sklearn.metrics import classification_report
 from skore import EstimatorReport
 
-MODEL_PATH = "models"
-REPORT_PATH = "reports"
 
-
-def evaluate(X_test, y_test, model_name: str, logger):
+def evaluate(X_test, y_test, cfg, logger):
     """Proper evaluation function with correct encoding"""
     logger.info("Starting model evaluation")
-
+    model_name = cfg.model_name
+    MODEL_PATH = cfg.model_path
+    REPORT_PATH = cfg.report_path
     try:
         # Load artifacts
         with open(
