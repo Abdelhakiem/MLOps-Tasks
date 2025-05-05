@@ -35,6 +35,20 @@ def encode_target(model_cfg, logger):
     return X_train, y_train, X_test, y_test
 
 
+# def get_search_space(space_cfg):
+#     def convert(val):
+#         if isinstance(val, str) and val.startswith("choice("):
+#             options = val[len("choice("):-1].split(",")
+#             return hp.choice(str(hash(val)), [o.strip() for o in options])
+#         elif isinstance(val, str) and val.startswith("loguniform("):
+#             low, high = map(float, val[len("loguniform("):-1].split(","))
+#             return hp.loguniform(str(hash(val)), low, high)
+#         elif isinstance(val, str) and val.startswith("uniform("):
+#             low, high = map(float, val[len("uniform("):-1].split(","))
+#             return hp.uniform(str(hash(val)), low, high)
+#         return val  # as-is
+#     return {k: convert(v) for k, v in space_cfg.items()}
+
 def get_search_space(space_cfg):
     def convert(val):
         if isinstance(val, str) and val.startswith("choice("):
@@ -47,7 +61,8 @@ def get_search_space(space_cfg):
             low, high = map(float, val[len("uniform("):-1].split(","))
             return hp.uniform(str(hash(val)), low, high)
         return val  # as-is
-    return {k: convert(v) for k, v in space_cfg.items()}
+
+    return {k: convert(v) for k, v in vars(space_cfg).items()}
 
 
 def objective(params, X, y, n_folds):
@@ -99,3 +114,28 @@ def train_model(X, y, cfg, logger):
         pickle.dump(final_model, f)
 
     logger.info("Model trained and saved successfully")
+
+
+from omegaconf import OmegaConf
+import dvc.api
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+from src.logger import ExecutorLogger
+from src.training.train import encode_target, train_model
+from types import SimpleNamespace
+
+def dict_to_namespace(d):
+    for k, v in d.items():
+        if isinstance(v, dict):
+            d[k] = dict_to_namespace(v)
+    return SimpleNamespace(**d)
+
+if __name__ == "__main__":
+    cfg = dvc.api.params_show()
+    cfg_model = dict_to_namespace(cfg["model"])
+    logger = ExecutorLogger("dvc-training")
+
+    X_train, y_train, X_test, y_test = encode_target(cfg_model, logger)
+    train_model(X_train, y_train, cfg_model, logger)

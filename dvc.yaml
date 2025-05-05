@@ -1,0 +1,27 @@
+stages:
+  process_data:
+    cmd: python src/training/process_data.py
+    deps:
+    - data/raw/titanic.csv
+    - src/training/process_data.py
+    outs:
+    - data/processed/pipeline.pkl
+    - data/processed/titanic-test.parquet
+    - data/processed/titanic-train.parquet
+  train_model:
+    cmd: python src/training/train.py
+    deps:
+    - data/processed/titanic-train.parquet
+    - src/training/train.py
+    outs:
+    - models/LogisticRegression/final_model.pkl
+    - models/LogisticRegression/model_target_translator.pkl
+  evaluate_model:
+    cmd: python src/training/evaluate.py
+    deps:
+    - models/LogisticRegression/final_model.pkl
+    - models/LogisticRegression/model_target_translator.pkl
+    - data/processed/titanic-test.parquet
+    - src/training/evaluate.py
+    outs:
+    - reports/LogisticRegression/evaluation_report.json

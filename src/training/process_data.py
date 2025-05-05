@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+
+import dvc.api
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
@@ -10,6 +12,12 @@ from feature_engine.selection import DropFeatures
 from feature_engine.wrappers import SklearnTransformerWrapper
 from sklearn.preprocessing import StandardScaler
 from omegaconf import DictConfig
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+from src.logger import ExecutorLogger
 
 def dtype_conversion(X, cat_cols):
     X = X.copy()
@@ -104,3 +112,22 @@ def read_process_data(
     except Exception as e:
         logger.error(f"Processing failed: {str(e)}")
         raise e
+
+from types import SimpleNamespace
+if __name__ == "__main__":
+    logger = ExecutorLogger("dvc-training")
+    cfg = dvc.api.params_show()
+    def dict_to_namespace(d):
+        for k, v in d.items():
+            if isinstance(v, dict):
+                d[k] = dict_to_namespace(v)
+        return SimpleNamespace(**d)
+
+    cfg_data = dict_to_namespace(cfg["data"])
+
+    read_process_data(
+            cfg_data
+            ,logger
+        )
+    
+    

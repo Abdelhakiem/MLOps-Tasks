@@ -1,0 +1,43 @@
+pipeline:
+  data:
+    raw_data_path: data/raw
+    processed_data_path: data/processed
+    file_name: titanic
+    target: Survived
+    splitting:
+      test_size: 0.2
+      random_state: 42
+    features:
+      numeric:
+      - Age
+      - Fare
+      - SibSp
+      - Parch
+      categorical:
+      - Pclass
+      - Sex
+      - Embarked
+      drop:
+      - PassengerId
+      - Name
+      - Ticket
+      - Cabin
+      - Survived
+  model:
+    processed_data_path: ${data.processed_data_path}
+    file_name: ${data.file_name}
+    target: ${data.target}
+    model_name: LogisticRegression
+    hyperparameters:
+      space:
+        penalty: choice(l1, l2, elasticnet)
+        C: loguniform(-4, 4)
+        solver: saga
+        l1_ratio: uniform(0, 1)
+      n_folds: 4
+    training:
+      max_evals: 3
+      n_folds: 3
+      max_iter: 1000
+  evaluate:
+    processed_data_path: ${data.processed_data_path}
