@@ -25,6 +25,11 @@ data:
 model:
   processed_data_path: data/processed
   file_name: titanic
+  repo_name: MLOps-Tasks
+  experiment_name: "titanic_classification"
+
+  use_mlflow: true
+  tracking_uri: https://dagshub.com/Abdelhakiem/MLOps-Tasks.mlflow
   target: Survived
   model_path: models
   model_name: LogisticRegression

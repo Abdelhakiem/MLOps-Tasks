@@ -11,11 +11,23 @@ stages:
   train_model:
     cmd: python src/training/train.py
     deps:
-    - data/processed/titanic-train.parquet
-    - src/training/train.py
+      - src/training/train.py
+      - data/processed/titanic-train.parquet
+      - params.yaml
+    params:
+      - model.processed_data_path
+      - model.file_name
+      - model.target
+      - model.model_path
+      - model.model_name
+      - model.hyperparameters.space
+      - model.hyperparameters.n_folds
+      - model.training.max_evals
+      - model.training.max_iter
     outs:
-    - models/LogisticRegression/final_model.pkl
-    - models/LogisticRegression/model_target_translator.pkl
+      - models/LogisticRegression/model_target_translator.pkl
+      - models/LogisticRegression/final_model.pkl
+
   evaluate_model:
     cmd: python src/training/evaluate.py
     deps:

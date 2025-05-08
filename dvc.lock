@@ -32,15 +32,34 @@ stages:
       hash: md5
       md5: 19774acfe6878f90bebb26bb4ef5fcb2
       size: 16646
+    - path: params.yaml
+      hash: md5
+      md5: beeb971f5919621e53c81bee031b0a9e
+      size: 1084
     - path: src/training/train.py
       hash: md5
-      md5: 768a65cd4d8e36f21bed5b0dceb82491
-      size: 5319
+      md5: d0a95dfd970336b4297ddad745aa0dd0
+      size: 7334
+    params:
+      params.yaml:
+        model.file_name: titanic
+        model.hyperparameters.n_folds: 4
+        model.hyperparameters.space:
+          penalty: choice(l1, l2, elasticnet)
+          C: loguniform(-4, 4)
+          solver: saga
+          l1_ratio: uniform(0, 1)
+        model.model_name: LogisticRegression
+        model.model_path: models
+        model.processed_data_path: data/processed
+        model.target: Survived
+        model.training.max_evals: 3
+        model.training.max_iter: 1000
     outs:
     - path: models/LogisticRegression/final_model.pkl
       hash: md5
-      md5: 8c29a6c929a28568d5e30c15aa0c60b2
-      size: 983
+      md5: b7118af5a036af11e78338e7ffad0233
+      size: 1035
     - path: models/LogisticRegression/model_target_translator.pkl
       hash: md5
       md5: 3ac888168f7f05f1d3adc02260cad5da
@@ -54,18 +73,18 @@ stages:
       size: 10563
     - path: models/LogisticRegression/final_model.pkl
       hash: md5
-      md5: 8c29a6c929a28568d5e30c15aa0c60b2
-      size: 983
+      md5: b7118af5a036af11e78338e7ffad0233
+      size: 1035
     - path: models/LogisticRegression/model_target_translator.pkl
       hash: md5
       md5: 3ac888168f7f05f1d3adc02260cad5da
       size: 339
     - path: src/training/evaluate.py
       hash: md5
-      md5: 9708c20d6565a2c5e12e7831151ed7eb
-      size: 2462
+      md5: d4a71f9ae3e7f39392b46e8afb68fc82
+      size: 3538
     outs:
     - path: reports/LogisticRegression/evaluation_report.json
       hash: md5
-      md5: 5bf9fdb17f19b51beff4e77fbc41ea86
+      md5: 8e2216b3503420e3fa949c38e802d491
       size: 704
