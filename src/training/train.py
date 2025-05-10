@@ -18,7 +18,18 @@ from src.logger import ExecutorLogger
 from types import SimpleNamespace
 import dagshub
 import mlflow
+# Add this before loading the pipeline
+from src.training.process_data import dtype_conversion
 
+# Add explicit registration for pickle
+import sys
+def dtype_conversion(X, cat_cols):
+    X = X.copy()
+    for col in cat_cols:
+        if col in X.columns:
+            # Fill NA and convert to category
+            X[col] = X[col].fillna('missing').astype('category')
+    return X
 from src.training.model_wrapper import ModelWrapper
 
 def dict_to_namespace(d):

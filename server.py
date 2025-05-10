@@ -1,30 +1,28 @@
-
-# from src.inference.app import InferenceAPI
-# import litserve as ls
-
-# if __name__ == "__main__":
-#     api = InferenceAPI()
-#     server = ls.LitServer(
-#         api, 
-#         accelerator="cpu"
-#     )
-#     server.run(port=8000, generate_client_file = False)
-
-# src/server.py
-#!/usr/bin/env python3
-
-# src/server.py
-#!/usr/bin/env python3
 import sys
 from src.inference.app import InferenceAPI
 import litserve as ls
-import os
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        raise SystemExit("Usage: python server.py <RUN_ID>")
-    run_id = sys.argv[1]
-    os.environ["RUN_ID"] = run_id
 
+if __name__ == "__main__":
     api = InferenceAPI()
-    server = ls.LitServer(api, accelerator="cpu")
-    server.run(port=8000, generate_client_file=False)
+    server = ls.LitServer(
+        api, 
+        accelerator="cpu"
+    )
+    server.run(port=8080, generate_client_file = False)    
+
+# {
+#   "input": {
+#     "PassengerId": 1,
+#     "Survived": 0,
+#     "Pclass": 3,
+#     "Name": "Braund, Mr. Owen Harris",
+#     "Sex": "male",
+#     "Age": 22.0,
+#     "SibSp": 1,
+#     "Parch": 0,
+#     "Ticket": "A/5 21171",
+#     "Fare": 7.25,
+#     "Cabin": null,
+#     "Embarked": "S"
+#   }
+# }
